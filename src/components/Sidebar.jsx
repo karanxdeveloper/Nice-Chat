@@ -18,6 +18,7 @@ const Sidebar = () => {
 
     const filteredUsers = input ? users.filter((user)=>user.fullName.toLowerCase().includes(input.toLowerCase())) : users;
 
+const [showOptions, setShowOptions] = useState(false)
 
     useEffect(()=>{
         getUsers()
@@ -30,9 +31,9 @@ const Sidebar = () => {
                 <div className='flex justify-between items-center'>
                     <img src={assets.nice_chat_logo} alt='logo' className='max-w-30' />
                     <div className='relative py-2 group'>
-                        <img src={assets.menu_icon} alt='menu' className='max-h-5 cursor-pointer' />
-                        <div className='absolute top-full right-0 z-20 w-32 p-5 rounded-md 
-                        bg-[#282142] border border-gray-600 text-gray-100 hidden group-hover:block'>
+                        <img onClick={() => setShowOptions(prev => !prev)} src={assets.menu_icon} alt='menu' className='max-h-5 cursor-pointer' />
+                        <div  className={`absolute top-full right-0 z-20 w-32 p-5 rounded-md 
+                        bg-[#282142] border border-gray-600 text-gray-100 ${showOptions ? 'block' : 'hidden'}`}>
                             <p onClick={()=>navigate("/profile")} className='cursor-pointer text-sm'>Edit Profile</p>
                             <hr className='my-2 border-t border-gray-500'/>
                             <p onClick={()=>logout()} className='cursor-pointer text-sm'>Logout</p>
