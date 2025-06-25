@@ -1,18 +1,34 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import assets from '../assets/assets'
-import logo from '../../public/nice-chat-logo.png'
+import { AuthContext } from '../../context/authContext'
+
 
 const ProfilePage = () => {
 
+  const {authUser,updateProfile} = useContext(AuthContext)
+
   const [selectedImage, setSelectedImage] = useState(null)
   const navigate = useNavigate()
-  const [name,setName] = useState("martin johnson")
-  const [bio,setBio] = useState("hii everyone i am using Nice Chat")
+  const [name,setName] = useState(authUser.fullName)
+  const [bio,setBio] = useState(authUser.bio)
 
   const handleSubmit = async (e) =>{
-    e.preventDefault()
-    navigate('/')
+    e.preventDefault();
+    if(!selectedImage){
+      await updateProfile({fullName:name,bio});
+      navigate('/')
+      return
+    }
+
+    const reader = new FileReader()
+    reader.readAsDataURL(selectedImage);
+    reader.onload = async ()=>{
+      const base64Image = reader.result;
+      await updateProfile({profilePic:base64Image, fullName:name,bio})
+      navigate("/")
+    }
+
   }
 
   return (
@@ -45,7 +61,7 @@ const ProfilePage = () => {
             text-white p-2 rounded-full text-lg cursor-pointer' type='submit'>Save</button>
         </form>
          
-        <img className='max-w-44  aspect-square rounded-md mx-10 max-sm:mt-10' src={logo} alt="" />
+        <img className={`max-w-44  aspect-square rounded-full mx-10 max-sm:mt-10 ${selectedImage && 'rounded-full'}`} src={authUser?.profilePic || assets.nice_chat_logo2} alt="" />
       </div>
         
     </div>
